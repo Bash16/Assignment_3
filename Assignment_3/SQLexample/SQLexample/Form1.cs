@@ -24,7 +24,7 @@ namespace SQLexample
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            dataGridView1.Visible = false;
+            dataGridView1.Visible = true;
             
             // TODO: This line of code loads data into the 'productDBDataSet.Table_Product' table. You can move, or remove it, as needed.
             this.table_ProductTableAdapter.Fill(this.productDBDataSet.Table_Product);
@@ -80,20 +80,27 @@ namespace SQLexample
         private void button3_Click(object sender, EventArgs e)
         {
             SqlConnection connection = new SqlConnection(connectionString);
-            cmd.Connection = connection;
-            connection.Open();
-
-            if (dataGridView1.Visible == true)
+            try
             {
-                dataGridView1.Visible = false;
-                dataGridView1.Visible = true;
-            }
-            if(dataGridView1.Visible == false)
-            {
-                dataGridView1.Visible = true;
-            }
+                cmd.Connection = connection;
+                connection.Open();
 
-            connection.Close();
+                string Query = "SELECT * FROM Table_Product";
+
+                SqlDataAdapter adapter = new SqlDataAdapter(Query, connectionString);
+                DataSet set = new DataSet();
+
+                adapter.Fill(set, "Table_Product");
+                dataGridView1.DataSource = set.Tables["Table_Product"];
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                connection.Close();
+            }
         }
 
         private void button4_Click(object sender, EventArgs e)
